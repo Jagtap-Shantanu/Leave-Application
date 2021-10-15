@@ -1,7 +1,7 @@
 #Leave-Application#
 
 1. User/Admin Sign up, login, email-verification, token-authentication
-2. User can submit leave application, can decrease or increase the leave time period (before approval of the application by admin) or withdraw the submitted application
+2. User can submit leave application, can decrease or increase the leave time per(before approval of the application by admin) or withdraw the submitted application
 3. User can submit supporting documents along with application.
 4. User will be entitled to be paid for the days of leaves that have not been availed.
 5. Admin will be able to approve/refuse/suggest convenient time span to user if the time span submitted by user is large.
