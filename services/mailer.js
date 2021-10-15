@@ -26,11 +26,11 @@ function sendMail(details) {
     return new Promise((resolve, reject) => {
         mailTransporter.sendMail(details, function(err, data) {
             if(err) {
-                //console.log('Error Occured');
-                reject()
+                console.log('Error Occured');
+                reject(err)
             } else {
-                //console.log('Email sent successfully');
-                resolve()
+                console.log('Email sent successfully', data);
+                resolve(data)
             }
         })
     })

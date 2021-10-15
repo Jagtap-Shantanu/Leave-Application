@@ -13,28 +13,33 @@ const register = (req, res) => {
         return res.status(400).send({status: "Error", message: "Invalid phone number"})
     }
 
-    userServices.addUser(req.body).then((data) => {
-        const token = userServices.createToken(req.body)
-        console.log(req.body, token)
-        var url = "http://localhost:3000/user/verify?token="+token
-        var emailDetails = mailer.setBody(req.body.email, url)
-
-        //console.log("Email details ", emailDetails)
-        mailer.sendMail(emailDetails).then(() => {
-            //console.log("Inside sendMail then")
-            res.set("verificationToken", token)
-            res.send({status: "Success", data, message: "Verification mail sent"})
+    userServices.isEmail(req.body.email).then(() => {
+        userServices.addUser(req.body).then((data) => {
+            const token = userServices.createToken(req.body)
+            console.log(req.body, token)
+            var url = "http://localhost:3000/user/verify?token="+token
+            var emailDetails = mailer.setBody(req.body.email, url)
+    
+            //console.log("Email details ", emailDetails)
+            mailer.sendMail(emailDetails).then(() => {
+                //console.log("Inside sendMail then")
+                res.set("verificationToken", token)
+                res.send({status: "Success", data, message: "Verification mail sent"})
+            }).catch((err) => {
+                //console.log("Inside sendMail catch")
+                res.status(500).send({status: "Error", message: "Error during sending email"})
+            })
+    
         }).catch((err) => {
-            //console.log("Inside sendMail catch")
-            res.status(500).send({status: "Error", message: "Error during sending email"})
+            if(err.code == 11000) {
+                return res.status(409).send({status: "Error", message: "Email already registered"})
+            }
+            console.log(err)
+            res.status(500).send({status: "Error", message: "Unable to add user into db"})
         })
-
-    }).catch((err) => {
-        if(err.code == 11000) {
-            return res.status(409).send({status: "Error", message: "Email already registered"})
-        }
-        console.log(err)
-        res.status(500).send({status: "Error", message: "Unable to add user into db"})
+    }).catch(() => {
+        console.log("==================================")
+        res.status(400).send({status: "Error", message: "Email does not exist "})
     })
 }
 

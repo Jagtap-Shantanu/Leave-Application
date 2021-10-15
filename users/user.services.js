@@ -1,6 +1,7 @@
 const UserModel = require("./user.model")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
+const emailExistence = require("email-existence")
 
 const addUser = (data) => {
 
@@ -81,9 +82,23 @@ const verifyToken = (data) => {
     })   
 }
 
+const isEmail = (email) => {
+    return new Promise((resolve, reject) => {
+        emailExistence.check(email, function(error, response){
+            console.log("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$", response, error)
+            if (!response) {
+                reject()
+            } else {
+                resolve()
+            }
+        })
+    })
+}
+
 module.exports = {
     addUser,
     createToken,
     verifyToken,
-    verifyUser
+    verifyUser,
+    isEmail
 }
