@@ -4,12 +4,12 @@ const emailValidator = require("email-validator")
 
 const register = (req, res) => {
  
-    var regExp = /\+?\d[\d -]{8,12}\d/;
-    var phone = regExp.test(req.body.phone)
+    var regExp = /\+?\d[\d -]{8,12}\d/
+    var phoneValidation = regExp.test(req.body.phone)
 
     if (! emailValidator.validate(req.body.email)) {
         return res.send({status: "Error", message: "Invalid email address"})
-    } else if (! phone) {
+    } else if (! phoneValidation) {
         return res.send({status: "Error", message: "Invalid phone number"})
     }
 
