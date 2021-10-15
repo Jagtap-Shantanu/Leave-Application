@@ -1,7 +1,6 @@
 const userServices = require("./user.services")
 const mailer = require("../services/mailer")
 const emailValidator = require("email-validator")
-const UserModel = require("./user.model")
 
 const register = (req, res) => {
  
@@ -9,9 +8,9 @@ const register = (req, res) => {
     var phoneValidation = regExp.test(req.body.phone)
 
     if (! emailValidator.validate(req.body.email)) {
-        return res.send({status: "Error", message: "Invalid email address"})
+        return res.status(400).send({status: "Error", message: "Invalid email address"})
     } else if (! phoneValidation) {
-        return res.send({status: "Error", message: "Invalid phone number"})
+        return res.status(400).send({status: "Error", message: "Invalid phone number"})
     }
 
     userServices.addUser(req.body).then((data) => {
@@ -25,9 +24,9 @@ const register = (req, res) => {
             //console.log("Inside sendMail then")
             res.set("verificationToken", token)
             res.send({status: "Success", data, message: "Verification mail sent"})
-        }).catch(() => {
+        }).catch((err) => {
             //console.log("Inside sendMail catch")
-            res.send("Internal server error")
+            res.status(500).send({status: "Error", message: "Error during sending email"})
         })
 
     }).catch((err) => {
@@ -35,7 +34,7 @@ const register = (req, res) => {
             return res.status(409).send({status: "Error", message: "Email already registered"})
         }
         console.log(err)
-        res.status(500).send("Internal server error", err)
+        res.status(500).send({status: "Error", message: "Unable to add user into db"})
     })
 }
 
@@ -46,18 +45,14 @@ const verify = (req, res) => {
         userServices.verifyUser(result.data ,token, (err, result) => {
             if (err) {
                 //console.log("Error in verifying the user")
-                res.send("Unable to verify user")
+                res.status(401).send({status: "Error", message:"User verified"})
             } else {
                 console.log("User verified", result)
-                res.send({
-                    message:"User verified"
-                })  
+                res.send({status: "Success", message:"User verified"}) 
             }
         }) 
     }).catch(() => {
-        res.send({
-            message:"User not verified"
-        })
+        res.status(500).send({status: "Error", message:"User not verified"})
     })
 }
 
