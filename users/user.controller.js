@@ -1,6 +1,7 @@
 const userServices = require("./user.services")
 const mailer = require("../services/mailer")
 const emailValidator = require("email-validator")
+const UserModel = require("./user.model")
 
 const register = (req, res) => {
  
@@ -19,22 +20,22 @@ const register = (req, res) => {
         var url = "http://localhost:3000/user/verify?token="+token
         var emailDetails = mailer.setBody(req.body.email, url)
 
-        console.log("Email details ", emailDetails)
+        //console.log("Email details ", emailDetails)
         mailer.sendMail(emailDetails).then(() => {
-            console.log("Inside sendMail then")
+            //console.log("Inside sendMail then")
             res.set("verificationToken", token)
             res.send({status: "Success", data, message: "Verification mail sent"})
         }).catch(() => {
-            console.log("Inside sendMail catch")
+            //console.log("Inside sendMail catch")
             res.send("Internal server error")
         })
 
     }).catch((err) => {
         if(err.code == 11000) {
-            return res.status(409).send("Email already registered")
+            return res.status(409).send({status: "Error", message: "Email already registered"})
         }
         console.log(err)
-        res.status(500).send("Internal server error")
+        res.status(500).send("Internal server error", err)
     })
 }
 

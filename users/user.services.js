@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 
 const addUser = (data) => {
+
     data.userID = (new Date().getTime()).toString(15)
     //console.log("With userID---------->", data)
     const saltRounds = 10;
