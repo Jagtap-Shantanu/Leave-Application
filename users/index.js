@@ -9,6 +9,6 @@ router.get("/verify", userController.verify)
 
 router.post("/login", userController.loginUser)
 
-router.get("/allusers", services.isAuthorised /*userController.getAllUsers*/)
+router.get("/allusers", services.isAuthorised, userController.getAllUsers)
 
 module.exports = router 

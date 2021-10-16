@@ -103,12 +103,26 @@ const login = (email, password) => {
             } else if (record) {
                 //compare hash password from db
                 if (bcrypt.compareSync(password, record.password) && email === record.email) {
-                    resolve(record.role, record.verified)
+                    resolve({role: record.role, verified: record.verified})
                 } else {
                     reject(new Error("Invalid credentials"))
                 }
             } else if (!record) {
                 reject(new Error("No such record found. Please register first"))
+            }
+        })
+    })
+}
+
+const getUserDetails = () => {
+    return new Promise((resolve, reject) => {
+        UserModel.find({}, (err, data) => {
+            if(err) {
+                reject(err)
+            } else if(!data) {
+                reject(new Error("No data found"))
+            } else {
+                resolve(data)
             }
         })
     })
@@ -120,5 +134,6 @@ module.exports = {
     verifyToken,
     verifyUser,
     isEmail,
-    login
+    login,
+    getUserDetails
 }

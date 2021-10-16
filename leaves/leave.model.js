@@ -1,8 +1,8 @@
 const Mongoose = require("mongoose")
-const Schema = Mongoose.Schema
+const Schema = Mongoose.Schema 
 
 const leaveSchema = new Schema ({
-    leaveID: {type: String, unique: true},
+    leaveID: {type: String, unique: true, required: true},
     userID: {type: String},
     title: {type: String, required: true},
     description: {type: String, required: true},

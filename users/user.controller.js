@@ -58,10 +58,10 @@ const verify = (req, res) => {
 
 const loginUser = (req, res) => {
     const {email, password} = req.body
-    userServices.login(email, password).then((role, verified) => {
-        req.body.role = role
-        req.body.verified = verified
-        console.log(req.body)
+    userServices.login(email, password).then((data) => {
+        req.body.role = data.role
+        req.body.verified = data.verified
+        console.log(data)
         var loginToken = userServices.createToken(req.body)
         res.set("loginToken", loginToken)
         res.send({status: "Success", message: "User login successful"})
@@ -71,7 +71,11 @@ const loginUser = (req, res) => {
 }
 
 const getAllUsers = (req, res) => {
-
+    userServices.getUserDetails().then((data) => {
+        res.send({status: "Success", data})
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
 }
 
 module.exports = {
