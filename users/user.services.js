@@ -95,10 +95,30 @@ const isEmail = (email) => {
     })
 }
 
+const login = (email, password) => {
+    return new Promise((resolve, reject) => {
+        UserModel.findOne({email}, {email: 1, password: 1, role: 1, verified: 1}, (err, record) => {
+            if(err) {
+                reject(new Error ("Error occured in finding the user in db"))
+            } else if (record) {
+                //compare hash password from db
+                if (bcrypt.compareSync(password, record.password) && email === record.email) {
+                    resolve(record.role, record.verified)
+                } else {
+                    reject(new Error("Invalid credentials"))
+                }
+            } else if (!record) {
+                reject(new Error("No such record found. Please register first"))
+            }
+        })
+    })
+}
+
 module.exports = {
     addUser,
     createToken,
     verifyToken,
     verifyUser,
-    isEmail
+    isEmail,
+    login
 }

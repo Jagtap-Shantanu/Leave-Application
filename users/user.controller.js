@@ -13,33 +13,28 @@ const register = (req, res) => {
         return res.status(400).send({status: "Error", message: "Invalid phone number"})
     } 
 
-    userServices.isEmail(req.body.email).then(() => {
-        userServices.addUser(req.body).then((data) => {
-            const token = userServices.createToken(req.body)
-            console.log(req.body, token)
-            var url = "http://localhost:3000/user/verify?token="+token
-            var emailDetails = mailer.setBody(req.body.email, url)
-    
-            //console.log("Email details ", emailDetails)
-            mailer.sendMail(emailDetails).then(() => {
-                //console.log("Inside sendMail then")
-                res.set("verificationToken", token)
-                res.send({status: "Success", data, message: "Verification mail sent"})
-            }).catch((err) => {
-                //console.log("Inside sendMail catch")
-                res.status(500).send({status: "Error", message: "Error during sending email"})
-            })
-    
+    userServices.addUser(req.body).then((data) => {
+        const token = userServices.createToken(req.body)
+        console.log(req.body, token)
+        var url = "http://localhost:3000/user/verify?token="+token
+        var emailDetails = mailer.setBody(req.body.email, url)
+
+        //console.log("Email details ", emailDetails)
+        mailer.sendMail(emailDetails).then(() => {
+            //console.log("Inside sendMail then")
+            res.set("verificationToken", token)
+            res.send({status: "Success", data, message: "Verification mail sent"})
         }).catch((err) => {
-            if(err.code == 11000) {
-                return res.status(409).send({status: "Error", message: "Email already registered"})
-            }
-            console.log(err)
-            res.status(500).send({status: "Error", message: "Unable to add user into db"})
+            //console.log("Inside sendMail catch")
+            res.status(500).send({status: "Error", message: "Error during sending email"})
         })
-    }).catch(() => {
-        console.log("==================================")
-        res.status(400).send({status: "Error", message: "Email does not exist "})
+
+    }).catch((err) => {
+        if(err.code == 11000) {
+            return res.status(409).send({status: "Error", message: "Email already registered" + err.message})
+        }
+        console.log(err)
+        res.status(500).send({status: "Error", message: err.message})
     })
 }
 
@@ -61,8 +56,27 @@ const verify = (req, res) => {
     })
 }
 
+const loginUser = (req, res) => {
+    const {email, password} = req.body
+    userServices.login(email, password).then((role, verified) => {
+        req.body.role = role
+        req.body.verified = verified
+        console.log(req.body)
+        var loginToken = userServices.createToken(req.body)
+        res.set("loginToken", loginToken)
+        res.send({status: "Success", message: "User login successful"})
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
+}
+
+const getAllUsers = (req, res) => {
+
+}
 
 module.exports = {
     register,
-    verify
+    verify,
+    loginUser,
+    getAllUsers
 }
