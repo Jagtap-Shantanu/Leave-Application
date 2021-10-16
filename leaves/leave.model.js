@@ -10,7 +10,8 @@ const leaveSchema = new Schema ({
     endDate: {type: Date, required: true},
     dayCount: {type: Number},
     documentUrl: {type: String},
-    status: {type: String}
+    status: {type: String, default: "pending"},
+    dayCount: {type: Number}
 })
 
 const leaveModel = Mongoose.model('leaves', leaveSchema)

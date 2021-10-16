@@ -24,6 +24,7 @@ const isUser  = (req, res, next) => {
     console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<", loginToken)
     verifyToken(loginToken).then((payload) => {
         console.log("^^^^^^^^^^^^^^^^^^^^^^", payload)
+        req.email = payload.data.email
         if(payload.data.verified) {
             if(payload.data.role === "user") {
                 next()
