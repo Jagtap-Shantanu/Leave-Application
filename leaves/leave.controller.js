@@ -2,44 +2,9 @@ const leaveServices = require("./leave.services")
 
 const reportLeave = (req, res) => {
     console.log("++++++++++++++++++++++++++++++++++++++++++", req.body)
+    console.log("++++++++++++++++++++++++++++++++++++++++++", req.dayCount)
 
-    var startDate = req.body.startDate.split("-")[2]
-    var endDate = req.body.endDate.split("-")[2]
-
-    var startMonth = req.body.startDate.split("-")[1]
-    var endMonth = req.body.endDate.split("-")[1]
-
-    var startYear = req.body.startDate.split("-")[0]
-    var endYear = req.body.endDate.split("-")[0]
-    //console.log(startDate, endDate)
-    var dayCount 
-
-    if (parseInt(startYear) != parseInt(endYear)) {
-        return res.status(401).send({status: "Error", message: "startYear and endYear should be same"})
-    }
-
-    if (parseInt(startMonth) == parseInt(endMonth)) {
-        if (parseInt(startDate) > parseInt(endDate)) {
-            console.log(1)
-            return res.status(401).send({status: "Error", message: "endDate should be greater then startDate"})
-        } else if (parseInt(startDate) == parseInt(endDate)) {
-            console.log(2)
-            dayCount = 1
-            console.log("DayCount", dayCount)
-        } else {
-            console.log(3)
-            dayCount = (parseInt(endDate) - parseInt(startDate)) + 1
-            console.log("DayCount", dayCount)
-        }
-    } else if (parseInt(startMonth) > parseInt(endMonth)) {
-        console.log(4)
-        return res.status(401).send({status: "Error", message: "endDate should be greater then startDate"})
-    } else {
-        console.log(5)
-        return res.status(401).send({status: "Error", message: "startDate and endDate should be from single month"})
-    }
-
-    req.body.dayCount = dayCount
+    req.body.dayCount = req.dayCount
 
     leaveServices.addLeave(req.body, req.email).then((data) => {
         res.send({status: "Success", data})
@@ -48,6 +13,43 @@ const reportLeave = (req, res) => {
     })
 }
 
+const getAllReports = (req, res) => {
+    console.log("UserId in query", req.query.userID)
+    leaveServices.getLeaves(req.query.userID).then((data) => {
+        res.send({status: "Success", data})
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
+}
+
+const deleteReport = (req, res) => {
+    leaveServices.deleteLeave(req.query.leaveID).then((data) => {
+        if (data === null) {
+            return res.status(404).send({status: "Error", message: "You cannot delete approved reports"})
+        }
+        res.send({status: "Success", data})
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
+}
+
+const updateReport = (req, res) => {
+    req.body.dayCount = req.dayCount
+
+    if (req.body.status) {
+        return res.status(401).send({status: "Error", message: "Only admin can update status of report"})
+    }
+
+    leaveServices.updateLeave(req.query.leaveID, req.body).then((data) => {
+        res.send({status: "Success", data})
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
+}
+
 module.exports = {
-    reportLeave
+    reportLeave,
+    getAllReports,
+    deleteReport,
+    updateReport
 }

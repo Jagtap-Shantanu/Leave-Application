@@ -2,7 +2,7 @@ const Mongoose = require("mongoose")
 const Schema = Mongoose.Schema 
 
 const leaveSchema = new Schema ({
-    leaveID: {type: String, unique: true, required: true},
+    leaveID: {type: String, unique: true},
     userID: {type: String},
     title: {type: String, required: true},
     description: {type: String, required: true},
@@ -10,7 +10,7 @@ const leaveSchema = new Schema ({
     endDate: {type: Date, required: true},
     dayCount: {type: Number},
     documentUrl: {type: String},
-    status: {type: String, default: "pending"},
+    status: {type: String, default: "pending", enum: ["pending", "approved"]},
     dayCount: {type: Number}
 })
 

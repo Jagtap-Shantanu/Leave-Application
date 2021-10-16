@@ -27,6 +27,42 @@ const addLeave = (data, email) => {
     })
 }
 
+const getLeaves = (userID) => {
+    return new Promise((resolve, reject) => {
+        LeaveModel.find({userID}).then((data) => {
+            console.log("leave data", data)
+            resolve(data)
+        }).catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+const deleteLeave = (leaveID) => {
+    return new Promise((resolve, reject) => {
+
+        LeaveModel.findOneAndDelete({leaveID, status: "pending"}).then((data) => {
+            resolve(data)
+        }).catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+const updateLeave = (leaveID, data) => {
+    return new Promise((resolve, reject) => {
+
+        LeaveModel.findOneAndUpdate({leaveID, status: "pending"}, data).then((updateData) => {
+            resolve(updateData)
+        }).catch((err) => {
+            reject(err)
+        })
+    })
+}
+
 module.exports = {
-    addLeave
+    addLeave,
+    getLeaves,
+    deleteLeave,
+    updateLeave
 }

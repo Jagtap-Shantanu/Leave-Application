@@ -55,8 +55,56 @@ const verifyToken = (data) => {
     })   
 }
 
+const validateDates = (req, res, next) => {
+
+    var startDate = req.body.startDate.split("-")[2]
+    var endDate = req.body.endDate.split("-")[2]
+
+    var startMonth = req.body.startDate.split("-")[1]
+    var endMonth = req.body.endDate.split("-")[1]
+
+    var startYear = req.body.startDate.split("-")[0]
+    var endYear = req.body.endDate.split("-")[0]
+    //console.log(startDate, endDate)
+    var dayCount 
+
+    if (parseInt(startYear) != parseInt(endYear)) {
+        return res.status(400).send({status: "Error", message: "startYear and endYear should be same"})
+    }
+
+    if (parseInt(startMonth) == parseInt(endMonth)) {
+        if (parseInt(startDate) < new Date().getDate() + 1)  {
+            return res.status(400).send({status: "Error", message: "startDate should be 1 + today's date. Because it takes one day for approving your application"})
+        }       
+        if (parseInt(startDate) > parseInt(endDate)) {
+            console.log(1)
+            return res.status(400).send({status: "Error", message: "endDate should be greater then startDate"})
+        } else if (parseInt(startDate) == parseInt(endDate)) {
+            console.log(2)
+            dayCount = 1
+            console.log("DayCount", dayCount)
+            req.dayCount = dayCount
+            next()
+        } else {
+            console.log(3)
+            dayCount = (parseInt(endDate) - parseInt(startDate)) + 1
+            console.log("DayCount", dayCount)
+            req.dayCount = dayCount
+            next()
+        }
+    } else if (parseInt(startMonth) > parseInt(endMonth)) {
+        console.log(4)
+        return res.status(400).send({status: "Error", message: "endDate should be greater then startDate"})
+    } else {
+        console.log(5)
+        return res.status(400).send({status: "Error", message: "startDate and endDate should be from single month"})
+    }
+
+}
+
 module.exports = {
     isAuthorised,
     verifyToken,
-    isUser
+    isUser,
+    validateDates
 }

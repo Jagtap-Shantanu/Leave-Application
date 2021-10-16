@@ -10,7 +10,6 @@ const PORT = process.env.PORT || 3000
 
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended: true}))
-app.use(express.json())
 app.use(routes)
 
 Mongoose.connect(dburl).then(function(){
