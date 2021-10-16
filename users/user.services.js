@@ -80,7 +80,7 @@ const verifyToken = (data) => {
             }
         })
     })   
-}
+} 
 
 const isEmail = (email) => {
     return new Promise((resolve, reject) => {

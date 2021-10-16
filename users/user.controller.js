@@ -11,7 +11,7 @@ const register = (req, res) => {
         return res.status(400).send({status: "Error", message: "Invalid email address"})
     } else if (! phoneValidation) {
         return res.status(400).send({status: "Error", message: "Invalid phone number"})
-    }
+    } 
 
     userServices.isEmail(req.body.email).then(() => {
         userServices.addUser(req.body).then((data) => {

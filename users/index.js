@@ -6,4 +6,4 @@ router.post('/register', userController.register)
 
 router.get("/verify", userController.verify)
 
-module.exports = router
+module.exports = router 

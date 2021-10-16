@@ -14,6 +14,6 @@ const userSchema = new Schema ({
     registrationDate: {type: Date, default: new Date()}
 })
 
-const userModel = Mongoose.model("users",userSchema)
+const userModel = Mongoose.model("users",userSchema) 
 
 module.exports = userModel
