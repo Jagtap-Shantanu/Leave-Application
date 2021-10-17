@@ -35,6 +35,30 @@ var setSuggestionBody = (email, body, leaveID) => {
     return mailDetails
 }
 
+var setApproveBody = (email, leaveID) => {
+    var mailDetails = {
+        from: '1805006@ritindia.edu',
+        to: email,
+        subject: `Approved your report ID-${leaveID}`,
+        html: `<p>Your report is successfully approved</p>`
+    }
+    console.log(mailDetails)
+
+    return mailDetails
+}
+
+var setRejectBody = (email, leaveID) => {
+    var mailDetails = {
+        from: '1805006@ritindia.edu',
+        to: email,
+        subject: `Rejected your report ID-${leaveID}`,
+        html: `<p>Your report is rejected due to some invalid data</p>`
+    }
+    console.log(mailDetails)
+
+    return mailDetails
+}
+
 function sendMail(details) { 
     return new Promise((resolve, reject) => {
         mailTransporter.sendMail(details, function(err, data) {
@@ -52,5 +76,7 @@ function sendMail(details) {
 module.exports = {
     sendMail,
     setBody,
-    setSuggestionBody
+    setSuggestionBody,
+    setApproveBody,
+    setRejectBody
 }

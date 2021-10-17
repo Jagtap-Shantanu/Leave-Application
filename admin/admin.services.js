@@ -26,13 +26,30 @@ const getUsers = () => {
 
 const approve = (leaveID) => {
     return new Promise((resolve, reject) => {
-        console.log("Inside Promise", leaveID)
+        //console.log("Inside Promise", leaveID)
         
         LeaveModel.findOneAndUpdate({leaveID}, {status: "approved"}).then((approvedReport) => {
-        console.log("Inside findOneAndUpdate of LeaveModel", approvedReport)
-            UserModel.updateOne({userID: approvedReport.userID}, {$inc: { leaveCount: 1 }}).then((userDetails) => {
-                console.log("Inside findOneAndUpdate of UserModel")
-                resolve({approvedReport, userDetails})
+            console.log("Inside findOneAndUpdate of LeaveModel", approvedReport)
+            UserModel.updateOne({userID: approvedReport.userID}, {$inc: { leaveCount: 1 }}).then(() => {
+                //console.log("Inside findOneAndUpdate of UserModel")
+
+                UserModel.findOne({userID: approvedReport.userID}, {email: 1}).then((data) => {
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kya yaar", data.email, leaveID)
+
+                    var approveBody = mailer.setApproveBody(data.email, leaveID)
+
+                    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", approveBody)
+
+                    mailer.sendMail(approveBody).then(() => {
+                        resolve(approvedReport)
+                    }).catch((err) => {
+                        reject(err)
+                    })
+
+                }).catch((err) => {
+                    reject(err)
+                })
+
             }).catch((err) => {
                 console.log("Inside error 1")
                 reject(err)
@@ -47,8 +64,25 @@ const approve = (leaveID) => {
 
 const reject = (leaveID) => {
     return new Promise((resolve, reject) => {
-        LeaveModel.findOneAndUpdate({leaveID}, {status: "rejected"}).then((data) => {
-            resolve(data)
+        LeaveModel.findOneAndUpdate({leaveID}, {status: "rejected"}).then((rejectData) => {
+
+            UserModel.findOne({userID: rejectData.userID}, {email: 1}).then((data) => {
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kya yaar", data.email, leaveID)
+
+                var rejectBody = mailer.setRejectBody(data.email, leaveID)
+
+                console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", rejectBody)
+
+                mailer.sendMail(rejectBody).then(() => {
+                    resolve(rejectData)
+                }).catch((err) => {
+                    reject(err)
+                })
+
+            }).catch((err) => {
+                reject(err)
+            })
+    
         }).catch((err) => {
             reject(err)
         })
