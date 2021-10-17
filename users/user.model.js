@@ -10,7 +10,7 @@ const userSchema = new Schema ({
     phone: {type: Number},
     verified: {type: Boolean, default: false},
     penalty: {type: Number, default: 0},
-    leaveCount: {type: Number, defaulf: 0},
+    leaveCount: {type: Number, default: 0},
     registrationDate: {type: Date, default: new Date()}
 })
 

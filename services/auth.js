@@ -29,7 +29,7 @@ const isUser  = (req, res, next) => {
             if(payload.data.role === "user") {
                 next()
             } else {
-                res.status(401).send({status: "Error", message: "You are not user so you cannot report leave"})
+                res.status(401).send({status: "Error", message: "Admin cannot perform this action"})
             }
         } else {
             res.status(401).send({status: "Error", message: "You account is not verified yet."})
@@ -56,6 +56,11 @@ const verifyToken = (data) => {
 }
 
 const validateDates = (req, res, next) => {
+    console.log(req.body)
+
+    if (!req.body.startDate || !req.body.endDate) {
+        return res.status(400).send({status: "Error", message: "startDate and endDate is required"})
+    }
 
     var startDate = req.body.startDate.split("-")[2]
     var endDate = req.body.endDate.split("-")[2]
@@ -102,9 +107,29 @@ const validateDates = (req, res, next) => {
 
 }
 
+const isAdmin  = (req, res, next) => {
+    const loginToken = req.headers["logintoken"]
+    console.log("<<<<<<<<<<<<<<<<<<<<<<<<<<<", loginToken)
+    verifyToken(loginToken).then((payload) => {
+        console.log("^^^^^^^^^^^^^^^^^^^^^^", payload)
+        if(payload.data.verified) {
+            if(payload.data.role === "admin") {
+                next()
+            } else {
+                res.status(401).send({status: "Error", message: "User cannot perform this action"})
+            }
+        } else {
+            res.status(401).send({status: "Error", message: "You account is not verified yet."})
+        }
+    }).catch((err) => {
+        res.send({status: "Error", message: err.message})
+    })
+}
+
 module.exports = {
     isAuthorised,
     verifyToken,
     isUser,
-    validateDates
+    validateDates,
+    isAdmin
 }

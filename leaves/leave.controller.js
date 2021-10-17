@@ -41,6 +41,9 @@ const updateReport = (req, res) => {
     }
 
     leaveServices.updateLeave(req.query.leaveID, req.body).then((data) => {
+        if (data === null) {
+            return res.status(400).send({status: "Error", message: "You cannot update approved report"})
+        }
         res.send({status: "Success", data})
     }).catch((err) => {
         res.status(500).send({status: "Error", message: err.message})
