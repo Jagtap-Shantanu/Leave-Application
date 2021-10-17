@@ -1,1 +1,3 @@
-console.log(new Date().getDate())
+require("dotenv").config()
+
+console.log(process.env.EMAIL)

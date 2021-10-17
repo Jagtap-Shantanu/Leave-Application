@@ -61,7 +61,7 @@ const approve = (leaveID) => {
         
     })
 }
-
+ 
 const reject = (leaveID) => {
     return new Promise((resolve, reject) => {
         LeaveModel.findOneAndUpdate({leaveID}, {status: "rejected"}).then((rejectData) => {

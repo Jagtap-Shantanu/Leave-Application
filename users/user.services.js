@@ -1,7 +1,6 @@
 const UserModel = require("./user.model")
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-const emailExistence = require("email-existence")
 
 const addUser = (data) => {
 

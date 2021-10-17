@@ -1,6 +1,7 @@
 const LeaveModel = require("./leave.model")
 const UserModel = require("../users/user.model")
 const mailer = require("../services/mailer")
+require("dotenv").config()
 
 const addLeave = (data, email) => {
     data.leaveID = (new Date().getTime()).toString(15)
@@ -22,7 +23,7 @@ const addLeave = (data, email) => {
 
                 mailer.sendMail(reportBody).then(() => {
                     console.log("----------------------------------------------------------")
-                    var adminBody = mailer.setAdminBody("shantanujagtap93@gmail.com", data.leaveID, userData.userID)
+                    var adminBody = mailer.setAdminBody(process.env.ADMIN_EMAIL, data.leaveID, userData.userID)
                     console.log("Admin body", adminBody)
 
                     mailer.sendMail(adminBody).then(() => {

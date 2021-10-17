@@ -13,4 +13,6 @@ router.get("/reject", services.isAdmin, services.isPending, adminController.reje
 
 router.post("/suggest", services.isAdmin, services.isPending, adminController.suggestReport)
 
+//router.get("/getleaves", services.isAdmin, adminController.getReports)
+
 module.exports = router

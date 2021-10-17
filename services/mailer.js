@@ -1,10 +1,11 @@
 const nodemailer = require('nodemailer')
+require("dotenv").config()
 
 let mailTransporter = nodemailer.createTransport({
 	service: 'gmail',
 	auth: {
-		user: '1805006@ritindia.edu',
-		pass: 'rit@shaw'
+		user: process.env.EMAIL,
+		pass: process.env.PASSWORD
 	}
 });
 
@@ -12,7 +13,7 @@ var setBody = (email, url) => {
     var string = `Click <a href= ${url} > here </a> to verify`
     console.log(string)
     var mailDetails = {
-        from: '1805006@ritindia.edu',
+        from: process.env.EMAIL,
         to: email,
         subject: "No reply plz",
         html: string
@@ -25,7 +26,7 @@ var setBody = (email, url) => {
 var setSuggestionBody = (email, body, leaveID) => {
     console.log(body)
     var mailDetails = {
-        from: '1805006@ritindia.edu',
+        from: process.env.EMAIL,
         to: email,
         subject: `Suggestion to your report ID-${leaveID}`,
         html: `<p>${body.suggestion}</p>`
@@ -37,7 +38,7 @@ var setSuggestionBody = (email, body, leaveID) => {
 
 var setApproveBody = (email, leaveID) => {
     var mailDetails = {
-        from: '1805006@ritindia.edu',
+        from: process.env.EMAIL,
         to: email,
         subject: `Approved your report ID-${leaveID}`,
         html: `<p>Your report is successfully approved</p>`
@@ -49,7 +50,7 @@ var setApproveBody = (email, leaveID) => {
 
 var setRejectBody = (email, leaveID) => {
     var mailDetails = {
-        from: '1805006@ritindia.edu',
+        from: process.env.EMAIL,
         to: email,
         subject: `Rejected your report ID-${leaveID}`,
         html: `<p>Your report is rejected due to some invalid data</p>`
@@ -61,7 +62,7 @@ var setRejectBody = (email, leaveID) => {
 
 var setReportBody = (email, leaveID) => {
     var mailDetails = {
-        from: '1805006@ritindia.edu',
+        from: process.env.EMAIL,
         to: email,
         subject: `Submitted your report ID-${leaveID}`,
         html: `<p>Your report is submitted and admin will look into it shortly</p>`
@@ -73,7 +74,7 @@ var setReportBody = (email, leaveID) => {
 
 var setAdminBody = (email, leaveID, userID) => {
     var mailDetails = {
-        from: '1805006@ritindia.edu',
+        from: process.env.EMAIL,
         to: email,
         subject: `New report ID-${leaveID}`,
         html: `<p>User with ID-${userID} has reported a leave application</p>`

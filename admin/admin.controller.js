@@ -17,7 +17,7 @@ const getAllUsers = (req, res) => {
         res.status(500).send({status: "Error", message: err.message})
     })
 }
-
+ 
 const approveReport = (req, res) => {
     console.log("%%%%%%%%%%%%%%%%%%%%%%%", req.query.leaveID)
 
@@ -48,6 +48,10 @@ const suggestReport = (req, res) => {
     }).catch((err) => {
         res.status(500).send({status: "Error", message: err.message})
     })
+}
+
+const getReports = (req, res) => {
+
 }
 
 module.exports = {
