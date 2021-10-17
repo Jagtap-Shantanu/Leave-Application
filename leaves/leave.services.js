@@ -1,5 +1,6 @@
 const LeaveModel = require("./leave.model")
 const UserModel = require("../users/user.model")
+const mailer = require("../services/mailer")
 
 const addLeave = (data, email) => {
     data.leaveID = (new Date().getTime()).toString(15)
@@ -15,7 +16,17 @@ const addLeave = (data, email) => {
             console.log("Leave ", leave)
             leave.save().then((data) => {
                 console.log("User data saved on db", data)
-                resolve(data)
+
+                var reportBody = mailer.setReportBody(email, data.leaveID)
+                console.log("Report body", reportBody)
+
+                mailer.sendMail(reportBody).then(() => {
+                    console.log("----------------------------------------------------------")
+                    resolve(data)
+                }).catch((err) => {
+                    reject(err)
+                })
+
             }).catch((err) => {
                 console.log("Internal server error ", err)
                 reject(err)
@@ -51,11 +62,11 @@ const deleteLeave = (leaveID) => {
 
 const updateLeave = (leaveID, data) => {
     return new Promise((resolve, reject) => {
-
-        LeaveModel.findOneAndUpdate({leaveID, status: "pending"}, data).then((updateData) => {
+        data.status = "pending"
+        LeaveModel.findOneAndUpdate({leaveID}, data).then((updateData) => {
             resolve(updateData)
         }).catch((err) => {
-            reject(err)
+            reject(err) 
         })
     })
 }

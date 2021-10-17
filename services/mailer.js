@@ -59,6 +59,18 @@ var setRejectBody = (email, leaveID) => {
     return mailDetails
 }
 
+var setReportBody = (email, leaveID) => {
+    var mailDetails = {
+        from: '1805006@ritindia.edu',
+        to: email,
+        subject: `Submitted your report ID-${leaveID}`,
+        html: `<p>Your report is submitted and admin will look into it shortly</p>`
+    }
+    console.log(mailDetails)
+
+    return mailDetails
+}
+
 function sendMail(details) { 
     return new Promise((resolve, reject) => {
         mailTransporter.sendMail(details, function(err, data) {
@@ -78,5 +90,6 @@ module.exports = {
     setBody,
     setSuggestionBody,
     setApproveBody,
-    setRejectBody
+    setRejectBody,
+    setReportBody
 }

@@ -127,19 +127,22 @@ const isAdmin  = (req, res, next) => {
     })
 }
 
-const isApproved = (req, res, next) => {
+const isNotApproved = (req, res, next) => {
+    console.log("Inside isNotApproved")
     LeaveModel.findOne({leaveID: req.query.leaveID}, {status: 1}).then((data) => {
         console.log("Status is ", data)
         if(data.status === "approved") {
-            return res.status(400).send({status: "Error", message: "You have already approved the report"})
+            return res.status(400).send({status: "Error", message: "You cannot update approved report"})
         }
+        console.log("Inside isNotApproved next")
         next()
     }).catch((err) => {
+        console.log("Inside isNotApproved error")
         res.status(500).send({status: "Error", message: err.message})
     })
 }
 
-const isRejected = (req, res, next) => {
+const isNotRejected = (req, res, next) => {
     LeaveModel.findOne({leaveID: req.query.leaveID}, {status: 1}).then((data) => {
         console.log("Status is ", data)
         if(data.status === "rejected") {
@@ -155,7 +158,19 @@ const isPending = (req, res, next) => {
     LeaveModel.findOne({leaveID: req.query.leaveID}, {status: 1}).then((data) => {
         console.log("Status is ", data)
         if(!(data.status === "pending")) {
-            return res.status(400).send({status: "Error", message: "You cannot suggest to non-pending reports"})
+            return res.status(400).send({status: "Error", message: "You cannot perform this action"})
+        }
+        next()
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
+}
+
+const isSuggestion = (req, res, next) => {
+    LeaveModel.findOne({leaveID: req.query.leaveID}, {status: 1}).then((data) => {
+        console.log("Status is ", data)
+        if(!(data.status === "suggestion")) {
+            return res.status(400).send({status: "Error", message: "You cannot perform this action"})
         }
         next()
     }).catch((err) => {
@@ -169,7 +184,8 @@ module.exports = {
     isUser,
     validateDates,
     isAdmin,
-    isApproved,
-    isRejected,
-    isPending
+    isNotApproved,
+    isNotRejected,
+    isPending,
+    isSuggestion
 }
