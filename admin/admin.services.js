@@ -111,10 +111,21 @@ const suggest = (leaveID, body) => {
     })
 }
 
+const fetchLeaves = (status) => {
+    return new Promise((resolve, reject) => {
+        LeaveModel.find({status}).then((data) => {
+            resolve(data)
+        }).catch((err) => {
+            reject(err)
+        })
+    })
+}
+
 module.exports = {
     getLeaves,
     getUsers,
     approve,
     reject,
-    suggest
+    suggest,
+    fetchLeaves
 }

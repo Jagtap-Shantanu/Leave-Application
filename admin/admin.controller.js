@@ -51,7 +51,11 @@ const suggestReport = (req, res) => {
 }
 
 const getReports = (req, res) => {
-
+    adminServices.fetchLeaves(req.query.status).then((data) => {
+        res.send({status: "Success", data})
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
 }
 
 module.exports = {
@@ -59,5 +63,6 @@ module.exports = {
     getAllUsers,
     approveReport,
     rejectReport,
-    suggestReport
+    suggestReport,
+    getReports
 }
