@@ -3,7 +3,7 @@ const mailer = require("../services/mailer")
 const emailValidator = require("email-validator")
 
 const register = (req, res) => {
- 
+    
     var regExp = /\+?\d[\d -]{8,12}\d/
     var phoneValidation = regExp.test(req.body.phone)
 

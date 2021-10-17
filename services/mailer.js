@@ -71,6 +71,18 @@ var setReportBody = (email, leaveID) => {
     return mailDetails
 }
 
+var setAdminBody = (email, leaveID, userID) => {
+    var mailDetails = {
+        from: '1805006@ritindia.edu',
+        to: email,
+        subject: `New report ID-${leaveID}`,
+        html: `<p>User with ID-${userID} has reported a leave application</p>`
+    }
+    console.log(mailDetails)
+
+    return mailDetails
+}
+
 function sendMail(details) { 
     return new Promise((resolve, reject) => {
         mailTransporter.sendMail(details, function(err, data) {
@@ -91,5 +103,6 @@ module.exports = {
     setSuggestionBody,
     setApproveBody,
     setRejectBody,
-    setReportBody
+    setReportBody,
+    setAdminBody
 }

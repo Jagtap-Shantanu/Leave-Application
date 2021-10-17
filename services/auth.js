@@ -130,7 +130,7 @@ const isAdmin  = (req, res, next) => {
 const isNotApproved = (req, res, next) => {
     console.log("Inside isNotApproved")
     LeaveModel.findOne({leaveID: req.query.leaveID}, {status: 1}).then((data) => {
-        console.log("Status is ", data)
+        console.log("Status is isNotApproved", data)
         if(data.status === "approved") {
             return res.status(400).send({status: "Error", message: "You cannot update approved report"})
         }
@@ -144,7 +144,7 @@ const isNotApproved = (req, res, next) => {
 
 const isNotRejected = (req, res, next) => {
     LeaveModel.findOne({leaveID: req.query.leaveID}, {status: 1}).then((data) => {
-        console.log("Status is ", data)
+        console.log("Status is isNotRejected", data)
         if(data.status === "rejected") {
             return res.status(400).send({status: "Error", message: "You cannot update rejected report"})
         }
@@ -178,6 +178,20 @@ const isSuggestion = (req, res, next) => {
     })
 }
 
+const isSuggestionOrPending = (req, res, next) => {
+    LeaveModel.findOne({leaveID: req.query.leaveID}, {status: 1}).then((data) => {
+        console.log("Status is ", data)
+        if((data.status === "suggestion") || (data.status === "pending")) {
+            console.log("Inside isSuggestionOrPending next()")
+            return next()
+        }
+        res.status(400).send({status: "Error", message: "You cannot perform this action"})
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
+}
+
+
 module.exports = {
     isAuthorised,
     verifyToken,
@@ -187,5 +201,6 @@ module.exports = {
     isNotApproved,
     isNotRejected,
     isPending,
-    isSuggestion
+    isSuggestion,
+    isSuggestionOrPending
 }

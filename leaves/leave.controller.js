@@ -24,6 +24,7 @@ const getAllReports = (req, res) => {
 
 const deleteReport = (req, res) => {
     leaveServices.deleteLeave(req.query.leaveID).then((data) => {
+        console.log("deleteReport data", data)
         if (data === null) {
             return res.status(404).send({status: "Error", message: "You cannot delete approved reports"})
         }

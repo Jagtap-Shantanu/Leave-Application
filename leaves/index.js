@@ -7,7 +7,7 @@ router.post("/report", services.isUser, services.validateDates, leaveController.
 
 router.get("/myreports", services.isUser, leaveController.getAllReports)
 
-router.delete("/delete", services.isUser, leaveController.deleteReport)
+router.delete("/delete", services.isUser, services.isSuggestionOrPending, leaveController.deleteReport)
 
 router.patch("/update", services.isUser, services.isNotRejected, services.isNotApproved, services.validateDates, leaveController.updateReport)
 

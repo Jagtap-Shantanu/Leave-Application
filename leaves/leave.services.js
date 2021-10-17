@@ -22,7 +22,15 @@ const addLeave = (data, email) => {
 
                 mailer.sendMail(reportBody).then(() => {
                     console.log("----------------------------------------------------------")
-                    resolve(data)
+                    var adminBody = mailer.setAdminBody("shantanujagtap93@gmail.com", data.leaveID, userData.userID)
+                    console.log("Admin body", adminBody)
+
+                    mailer.sendMail(adminBody).then(() => {
+                        resolve(data)
+                    }).catch((err) => {
+                        reject(err)
+                    })
+
                 }).catch((err) => {
                     reject(err)
                 })
@@ -52,8 +60,18 @@ const getLeaves = (userID) => {
 const deleteLeave = (leaveID) => {
     return new Promise((resolve, reject) => {
 
-        LeaveModel.findOneAndDelete({leaveID, status: "pending"}).then((data) => {
-            resolve(data)
+        LeaveModel.findOneAndDelete({leaveID, status: "pending"}).then((pendingData) => {
+            console.log("Pending data", pendingData)
+            if (pendingData === null) {
+                LeaveModel.findOneAndDelete({leaveID, status: "suggestion"}).then((suggestionData) => {
+                    console.log("suggestionData data", suggestionData)
+                    resolve(suggestionData)
+                }).catch((err) => {
+                    reject(err)
+                })
+            } else {
+                resolve(pendingData)
+            }
         }).catch((err) => {
             reject(err)
         })
