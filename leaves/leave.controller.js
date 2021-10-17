@@ -35,10 +35,10 @@ const deleteReport = (req, res) => {
 
 const updateReport = (req, res) => {
     req.body.dayCount = req.dayCount
-
+ 
     if (req.body.status) {
         return res.status(401).send({status: "Error", message: "Only admin can update status of report"})
-    }
+    } 
 
     leaveServices.updateLeave(req.query.leaveID, req.body).then((data) => {
         if (data === null) {
