@@ -22,6 +22,19 @@ var setBody = (email, url) => {
     return mailDetails
 }
 
+var setSuggestionBody = (email, body, leaveID) => {
+    console.log(body)
+    var mailDetails = {
+        from: '1805006@ritindia.edu',
+        to: email,
+        subject: `Suggestion to your report ID-${leaveID}`,
+        html: `<p>${body.suggestion}</p>`
+    }
+    //console.log(mailDetails)
+
+    return mailDetails
+}
+
 function sendMail(details) { 
     return new Promise((resolve, reject) => {
         mailTransporter.sendMail(details, function(err, data) {
@@ -38,5 +51,6 @@ function sendMail(details) {
 
 module.exports = {
     sendMail,
-    setBody
+    setBody,
+    setSuggestionBody
 }

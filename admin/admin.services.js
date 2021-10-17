@@ -1,5 +1,6 @@
 const LeaveModel = require("../leaves/leave.model")
 const UserModel = require("../users/user.model")
+const mailer = require("../services/mailer")
 
 const getLeaves = () => {
     return new Promise((resolve, reject) => {
@@ -26,7 +27,7 @@ const getUsers = () => {
 const approve = (leaveID) => {
     return new Promise((resolve, reject) => {
         console.log("Inside Promise", leaveID)
-   
+        
         LeaveModel.findOneAndUpdate({leaveID}, {status: "approved"}).then((approvedReport) => {
         console.log("Inside findOneAndUpdate of LeaveModel", approvedReport)
             UserModel.updateOne({userID: approvedReport.userID}, {$inc: { leaveCount: 1 }}).then((userDetails) => {
@@ -44,8 +45,42 @@ const approve = (leaveID) => {
     })
 }
 
+const reject = (leaveID) => {
+    return new Promise((resolve, reject) => {
+        LeaveModel.findOneAndUpdate({leaveID}, {status: "rejected"}).then((data) => {
+            resolve(data)
+        }).catch((err) => {
+            reject(err)
+        })
+    })
+}
+
+const suggest = (leaveID, body) => {
+    return new Promise((resolve, reject) => {
+        LeaveModel.findOneAndUpdate({leaveID}, {status: "suggestion"}, {userID: 1}).then((leaveData) => {
+            UserModel.findOne({userID: leaveData.userID}, {email: 1}).then((userData) => {
+                var mailDetails = mailer.setSuggestionBody(userData.email, body, leaveID)
+                console.log("mail details", mailDetails)
+
+                mailer.sendMail(mailDetails).then((data) => {
+                    resolve(data)
+                }).catch((err) => {
+                    reject(err)
+                })
+
+            }).catch((err) => {
+                reject(err)
+            })
+        }).catch((err) => {
+            reject(err)
+        })
+    })
+}
+
 module.exports = {
     getLeaves,
     getUsers,
-    approve
+    approve,
+    reject,
+    suggest
 }

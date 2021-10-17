@@ -9,6 +9,6 @@ router.get("/myreports", services.isUser, leaveController.getAllReports)
 
 router.delete("/delete", services.isUser, leaveController.deleteReport)
 
-router.patch("/update", services.isUser, services.validateDates, leaveController.updateReport)
+router.patch("/update", services.isUser, services.isRejected, services.validateDates, leaveController.updateReport)
 
 module.exports = router

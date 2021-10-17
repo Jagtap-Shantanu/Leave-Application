@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken")
+const LeaveModel = require("../leaves/leave.model")
 
 const isAuthorised = (req, res, next) => {
     const loginToken = req.headers["logintoken"]
@@ -126,10 +127,49 @@ const isAdmin  = (req, res, next) => {
     })
 }
 
+const isApproved = (req, res, next) => {
+    LeaveModel.findOne({leaveID: req.query.leaveID}, {status: 1}).then((data) => {
+        console.log("Status is ", data)
+        if(data.status === "approved") {
+            return res.status(400).send({status: "Error", message: "You have already approved the report"})
+        }
+        next()
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
+}
+
+const isRejected = (req, res, next) => {
+    LeaveModel.findOne({leaveID: req.query.leaveID}, {status: 1}).then((data) => {
+        console.log("Status is ", data)
+        if(data.status === "rejected") {
+            return res.status(400).send({status: "Error", message: "You cannot update rejected report"})
+        }
+        next()
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
+}
+
+const isPending = (req, res, next) => {
+    LeaveModel.findOne({leaveID: req.query.leaveID}, {status: 1}).then((data) => {
+        console.log("Status is ", data)
+        if(!(data.status === "pending")) {
+            return res.status(400).send({status: "Error", message: "You cannot suggest to non-pending reports"})
+        }
+        next()
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
+}
+
 module.exports = {
     isAuthorised,
     verifyToken,
     isUser,
     validateDates,
-    isAdmin
+    isAdmin,
+    isApproved,
+    isRejected,
+    isPending
 }
