@@ -84,6 +84,18 @@ var setAdminBody = (email, leaveID, userID) => {
     return mailDetails
 }
 
+var setNotificationBody = (userID) => {
+    var mailDetails = {
+        from: process.env.EMAIL,
+        to: process.env.ADMIN_EMAIL,
+        subject: `Remainder to check the report`,
+        html: `<p>You have not checked the report of user with ID-${userID}. Please look into it.</p>`
+    }
+    console.log(mailDetails)
+
+    return mailDetails
+}
+
 function sendMail(details) { 
     return new Promise((resolve, reject) => {
         mailTransporter.sendMail(details, function(err, data) {
@@ -105,5 +117,6 @@ module.exports = {
     setApproveBody,
     setRejectBody,
     setReportBody,
-    setAdminBody
+    setAdminBody,
+    setNotificationBody
 }

@@ -1,35 +1,59 @@
-const cron = require("node-cron")
 const LeaveModel = require("../leaves/leave.model")
-const UserModel = require("../users/user.model")
+const mailer = require("./mailer")
 
 const sendNotificationToAdmin = () => {
-    return new Promise((resolve, reject) => {
-        LeaveModel.find({status: "pending"}, {userID: 1}).then((leaveData) => {
-            console.log("leaveData", leaveData)
-            var arrayOfEmails = []
-            for(var i = 0; i< leaveData.length; i++) {
-                UserModel.find({userID: leaveData[i].userID}, {email: 1}).then((userData) => {
-                    //console.log(userData)
-                    for (var j = 0; j< userData.length; j++) {
-                        if (!arrayOfEmails.includes(userData[j].email)) {
-                            arrayOfEmails.push(userData[j].email)
-                        }
-                    }
-                    console.log("All emails", arrayOfEmails)
-                    //resolve(userData)
-                }).catch((err) => {
-                    reject(err)
-                })
-            }
+    
+    LeaveModel.find({status: "pending"}, {userID: 1}).then((leaveData) => {
+        //console.log("leaveData", leaveData)
+        var arrayOfUserIDs = []
 
-        }).catch((err) => {
-            reject(err)
-        })
+        for(var i = 0; i< leaveData.length; i++) {
+            if(!arrayOfUserIDs.includes(leaveData[i].userID)) {
+                arrayOfUserIDs.push(leaveData[i].userID)
+            }
+        }
+        //console.log("sendNotificationToAdmin ", data)
+        console.log("sendNotificationToAdmin userIDs", arrayOfUserIDs)
+    
+        for (var j = 0; j< arrayOfUserIDs.length; j++) {
+            var mailBody = mailer.setNotificationBody(arrayOfUserIDs[j])
+            mailer.sendMail(mailBody).then(() => {
+                console.log("Notification mail sent to admin of user")
+            }).catch((err) => {
+                console.log("Error while sending notification mail to Admin", err.message)
+            })
+        }
+
+    }).catch((err) => {
+        reject(err)
     })
+    
 }
 
-sendNotificationToAdmin().then((data) => {
-    console.log("sendNotificationToAdmin ", data)
-}).catch((err) => {
-    console.log("sendNotificationToAdmin error", err.message)
-})
+module.exports = {
+    sendNotificationToAdmin
+}
+
+// sendNotificationToAdmin().then((data) => {
+//     for(var i = 0; i< data.length; i++) {
+//         if(!arrayOfUserIDs.includes(data[i].userID)) {
+//             arrayOfUserIDs.push(data[i].userID)
+//         }
+//     }
+//     //console.log("sendNotificationToAdmin ", data)
+//     console.log("sendNotificationToAdmin userIDs", arrayOfUserIDs)
+
+//     for (var j = 0; j< arrayOfUserIDs.length; j++) {
+//         var mailBody = mailer.setNotificationBody(arrayOfUserIDs[j])
+//         mailer.sendMail(mailBody).then(() => {
+//             console.log("Notification mail sent to admin of user")
+//         }).catch((err) => {
+//             console.log("Error while sending notification mail to Admin", err.message)
+//         })
+//     }
+
+// }).catch((err) => {
+//     console.log("sendNotificationToAdmin error", err)
+// })
+
+
