@@ -62,14 +62,14 @@ const approve = (leaveID) => {
     })
 }
  
-const reject = (leaveID) => {
+const reject = (leaveID, reason) => {
     return new Promise((resolve, reject) => {
         LeaveModel.findOneAndUpdate({leaveID}, {status: "rejected"}).then((rejectData) => {
 
             UserModel.findOne({userID: rejectData.userID}, {email: 1}).then((data) => {
                 console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kya yaar", data.email, leaveID)
 
-                var rejectBody = mailer.setRejectBody(data.email, leaveID)
+                var rejectBody = mailer.setRejectBody(data.email, leaveID, reason)
 
                 console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", rejectBody)
 

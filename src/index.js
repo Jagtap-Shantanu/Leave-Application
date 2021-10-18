@@ -8,7 +8,7 @@ require("dotenv").config()
 
 //For scheduling emails every 24 hours :-  * */24 * * *
 cron.schedule('*/5 * * * *', () => {
-    notifyAdmin.sendNotificationToAdmin()
+    //notifyAdmin.sendNotificationToAdmin()
     console.log('running every minute 1, 2, 4 and 5');
   });
 

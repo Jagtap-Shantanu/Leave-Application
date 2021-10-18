@@ -26,12 +26,12 @@ const approveReport = (req, res) => {
     }).catch((err) => {
         res.status(500).send({status: "Error", message: err})
     })
-}
+} 
 
 const rejectReport = (req, res) => {
     console.log("%%%%%%%%%%%%%%%%%%%%%%%", req.query.leaveID)
 
-    adminServices.reject(req.query.leaveID).then((data) => {
+    adminServices.reject(req.query.leaveID, req.body.reason).then((data) => {
         res.send({status: "Success", data})
     }).catch((err) => {
         res.status(500).send({status: "Error", message: err})

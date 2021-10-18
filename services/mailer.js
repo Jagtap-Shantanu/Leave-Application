@@ -48,12 +48,12 @@ var setApproveBody = (email, leaveID) => {
     return mailDetails
 }
 
-var setRejectBody = (email, leaveID) => {
+var setRejectBody = (email, leaveID, reason) => {
     var mailDetails = {
         from: process.env.EMAIL,
         to: email,
         subject: `Rejected your report ID-${leaveID}`,
-        html: `<p>Your report is rejected due to some invalid data</p>`
+        html: `<p>Your report is rejected due following reason(s) - ${reason}</p>`
     }
     console.log(mailDetails)
 
