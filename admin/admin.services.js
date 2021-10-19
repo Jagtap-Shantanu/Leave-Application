@@ -28,17 +28,17 @@ const approve = (leaveID) => {
     return new Promise((resolve, reject) => {
         //console.log("Inside Promise", leaveID)
         
-        LeaveModel.findOneAndUpdate({leaveID}, {status: "approved"}).then((approvedReport) => {
+        LeaveModel.findOneAndUpdate({leaveID}, {status: "approved"}, {new: true}).then((approvedReport) => {
             console.log("Inside findOneAndUpdate of LeaveModel", approvedReport)
             UserModel.updateOne({userID: approvedReport.userID}, {$inc: { leaveCount: 1 }}).then(() => {
-                //console.log("Inside findOneAndUpdate of UserModel")
+                //console.log("Inside findOneAndUpdate of UserModel dayCOunt", approvedReport)
 
-                UserModel.findOne({userID: approvedReport.userID}, {email: 1}).then((data) => {
-                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kya yaar", data.email, leaveID)
+                UserModel.findOneAndUpdate({userID: approvedReport.userID}, {$inc: {remainingLeaves: -approvedReport.dayCount}}, {new: true}).then((data) => {
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kya yaar", data)
 
-                    var approveBody = mailer.setApproveBody(data.email, leaveID)
+                    var approveBody = mailer.setApproveBody(data.email, leaveID, data.remainingLeaves)
 
-                    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", approveBody)
+                    console.log("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", data)
 
                     mailer.sendMail(approveBody).then(() => {
                         resolve(approvedReport)
@@ -51,7 +51,7 @@ const approve = (leaveID) => {
                 })
 
             }).catch((err) => {
-                console.log("Inside error 1")
+                console.log("Inside error 1", err)
                 reject(err)
             })
         }).catch((err) => {
@@ -64,7 +64,7 @@ const approve = (leaveID) => {
  
 const reject = (leaveID, reason) => {
     return new Promise((resolve, reject) => {
-        LeaveModel.findOneAndUpdate({leaveID}, {status: "rejected"}).then((rejectData) => {
+        LeaveModel.findOneAndUpdate({leaveID}, {status: "rejected"}, {new: true}).then((rejectData) => {
 
             UserModel.findOne({userID: rejectData.userID}, {email: 1}).then((data) => {
                 console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! kya yaar", data.email, leaveID)
@@ -91,7 +91,7 @@ const reject = (leaveID, reason) => {
 
 const suggest = (leaveID, body) => {
     return new Promise((resolve, reject) => {
-        LeaveModel.findOneAndUpdate({leaveID}, {status: "suggestion"}, {userID: 1}).then((leaveData) => {
+        LeaveModel.findOneAndUpdate({leaveID}, {status: "suggestion"}, {new: true}).then((leaveData) => {
             UserModel.findOne({userID: leaveData.userID}, {email: 1}).then((userData) => {
                 var mailDetails = mailer.setSuggestionBody(userData.email, body, leaveID)
                 console.log("mail details", mailDetails)
@@ -121,11 +121,22 @@ const fetchLeaves = (status) => {
     })
 }
 
+const getLeavesByID = (userID) => {
+    return new Promise((resolve, reject) => {
+        LeaveModel.find({userID}).then((data) => {
+            resolve(data)
+        }).catch((err) => {
+            reject(err)
+        })
+    })
+}
+
 module.exports = {
     getLeaves,
     getUsers,
     approve,
     reject,
     suggest,
-    fetchLeaves
+    fetchLeaves,
+    getLeavesByID
 }

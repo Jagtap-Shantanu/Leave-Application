@@ -11,4 +11,4 @@ router.delete("/delete", services.isUser, services.isSuggestionOrPending, leaveC
 
 router.patch("/update", services.isUser, services.isNotRejected, services.isNotApproved, services.validateDates, leaveController.updateReport)
 
-module.exports = router 
+module.exports = router  

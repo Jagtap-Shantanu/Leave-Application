@@ -21,6 +21,8 @@ const getAllUsers = (req, res) => {
 const approveReport = (req, res) => {
     console.log("%%%%%%%%%%%%%%%%%%%%%%%", req.query.leaveID)
 
+    //check available leaves
+    
     adminServices.approve(req.query.leaveID).then((data) => {
         res.send({status: "Success", data})
     }).catch((err) => {
@@ -58,11 +60,20 @@ const getReports = (req, res) => {
     })
 }
 
+const getUserReportsByID = (req, res) => {
+    adminServices.getLeavesByID(req.query.userID).then((userLeaves) => {
+        res.send({status: "Success", userLeaves})
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err.message})
+    })
+}
+
 module.exports = {
     getAllReports,
     getAllUsers,
     approveReport,
     rejectReport,
     suggestReport,
-    getReports
+    getReports,
+    getUserReportsByID
 }

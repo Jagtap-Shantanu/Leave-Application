@@ -11,6 +11,7 @@ const userSchema = new Schema ({
     verified: {type: Boolean, default: false},
     penalty: {type: Number, default: 0},
     leaveCount: {type: Number, default: 0},
+    remainingLeaves: {type: Number, default: 24},
     registrationDate: {type: Date, default: new Date()}
 })
 
