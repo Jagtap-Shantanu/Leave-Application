@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken")
 const LeaveModel = require("../leaves/leave.model")
+const UserModel = require("../users/user.model")
 
 const isAuthorised = (req, res, next) => {
     const loginToken = req.headers["logintoken"]
@@ -91,14 +92,34 @@ const validateDates = (req, res, next) => {
             console.log("DayCount", dayCount)
             req.dayCount = dayCount
             //check available leaves days
-            next()
+            UserModel.findOne({email: req.email}, {remainingLeaves: 1}).then((userData) => {
+                var diff_leaves = userData.remainingLeaves - dayCount
+                if ((diff_leaves) < 0) {
+                    console.log("Subtraction of leaves", diff_leaves)
+                    return res.status(400).send({status: "Error", message: `You have finished your total allowed leaves. ${diff_leaves} days of penalty will be charged to you!`})
+                } else {
+                    next()
+                }
+            }).catch((err) => {
+                return res.status(400).send({status: "Error", message: err.message})
+            })
         } else {
             console.log(3)
             dayCount = (parseInt(endDate) - parseInt(startDate)) + 1
             console.log("DayCount", dayCount)
             req.dayCount = dayCount
             //check available leaves days 
-            next()
+            UserModel.findOne({email: req.email}, {remainingLeaves: 1}).then((userData) => {
+                var diff_leaves = userData.remainingLeaves - dayCount
+                if ((diff_leaves) < 0) {
+                    console.log("Subtraction of leaves", diff_leaves)
+                    return res.status(400).send({status: "Error", message: `You have finished your total allowed leaves. ${diff_leaves} days of penalty will be charged to you!`})
+                } else {
+                    next()
+                }
+            }).catch((err) => {
+                return res.status(400).send({status: "Error", message: err.message})
+            })
         }
     } else if (parseInt(startMonth) > parseInt(endMonth)) {
         console.log(4)
@@ -192,7 +213,6 @@ const isSuggestionOrPending = (req, res, next) => {
         res.status(500).send({status: "Error", message: err.message})
     })
 }
-
 
 module.exports = {
     isAuthorised,
