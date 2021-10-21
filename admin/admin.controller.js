@@ -1,4 +1,5 @@
 const adminServices = require("./admin.services")
+const path = require("path")
 
 const getAllReports = (req, res) => {
 
@@ -21,8 +22,6 @@ const getAllUsers = (req, res) => {
 const approveReport = (req, res) => {
     console.log("%%%%%%%%%%%%%%%%%%%%%%%", req.query.leaveID)
 
-    //check available leaves
-    
     adminServices.approve(req.query.leaveID).then((data) => {
         res.send({status: "Success", data})
     }).catch((err) => {
@@ -70,7 +69,9 @@ const getUserReportsByID = (req, res) => {
  
 const download = (req, res) => {
     adminServices.storeJsonToExcel().then((result) => {
-        //res.download(__dirname + "/UserLeaveData.xlsx")
+        var excelFilePath = path.resolve(__dirname, "../UserLeaveData.xlsx")
+        console.log("Path is", excelFilePath)
+        //res.download(excelFilePath)
         res.send({status: "Success", message: result})
     }).catch((err) => {
         res.status(500).send({status: "Error", message: err})
