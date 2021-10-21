@@ -70,6 +70,7 @@ const getUserReportsByID = (req, res) => {
  
 const download = (req, res) => {
     adminServices.storeJsonToExcel().then((result) => {
+        //res.download(__dirname + "/UserLeaveData.xlsx")
         res.send({status: "Success", message: result})
     }).catch((err) => {
         res.status(500).send({status: "Error", message: err})
