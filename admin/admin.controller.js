@@ -67,6 +67,14 @@ const getUserReportsByID = (req, res) => {
         res.status(500).send({status: "Error", message: err.message})
     })
 }
+ 
+const download = (req, res) => {
+    adminServices.storeJsonToExcel().then((result) => {
+        res.send({status: "Success", message: result})
+    }).catch((err) => {
+        res.status(500).send({status: "Error", message: err})
+    })
+}
 
 module.exports = {
     getAllReports,
@@ -75,5 +83,6 @@ module.exports = {
     rejectReport,
     suggestReport,
     getReports,
-    getUserReportsByID
+    getUserReportsByID,
+    download
 }

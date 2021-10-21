@@ -90,12 +90,14 @@ const validateDates = (req, res, next) => {
             dayCount = 1
             console.log("DayCount", dayCount)
             req.dayCount = dayCount
+            //check available leaves days
             next()
         } else {
             console.log(3)
             dayCount = (parseInt(endDate) - parseInt(startDate)) + 1
             console.log("DayCount", dayCount)
             req.dayCount = dayCount
+            //check available leaves days 
             next()
         }
     } else if (parseInt(startMonth) > parseInt(endMonth)) {
