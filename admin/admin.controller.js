@@ -25,7 +25,7 @@ const approveReport = (req, res) => {
     adminServices.approve(req.query.leaveID).then((data) => {
         // set penalty if 
         adminServices.setPenalty(req.query.leaveID).then((penaltyData) => {
-            res.send({status: "Success", penaltyData})
+            res.send({status: "Success", penaltyData, data})
         }).catch((err) => {
             res.status(500).send({status: "Error", message: err})
         })

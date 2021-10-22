@@ -211,13 +211,18 @@ const setPenalty = (leaveID) => {
             UserModel.findOne({userID: leaveData.userID}, {remainingLeaves: 1}).then((userData) => {
                 console.log("remaining leaves are", userData)
 
-                UserModel.findOneAndUpdate({userID: leaveData.userID}, {$set: {penalty: -1 * userData.remainingLeaves * 1000}}, {new: true}).then((penaltyData) => {
-                    console.log("Penalty is set to", penaltyData)
-                    resolve(penaltyData)
-                }).catch((err) => {
-                    console.log("remaining leaves", err)
-                reject(err)
-                })
+                if (userData.remainingLeaves < 0) {
+                    UserModel.findOneAndUpdate({userID: leaveData.userID}, {$set: {penalty: -1 * userData.remainingLeaves * 1000}}, {new: true}).then((penaltyData) => {
+                        console.log("Penalty is set to", penaltyData)
+                        resolve(penaltyData)
+                    }).catch((err) => {
+                        console.log("remaining leaves", err)
+                    reject(err)
+                    })
+                } else {
+                    resolve({message: "User has available leaves. So penalty is not set."})
+                }
+
             }).catch((err) => {
                 console.log("remaining leaves", err)
                 reject(err)
