@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 const LeaveModel = require("../leaves/leave.model")
 const UserModel = require("../users/user.model")
+const mailer = require("./mailer")
 
 const isAuthorised = (req, res, next) => {
     const loginToken = req.headers["logintoken"]
@@ -95,8 +96,14 @@ const validateDates = (req, res, next) => {
             UserModel.findOne({email: req.email}, {remainingLeaves: 1}).then((userData) => {
                 var diff_leaves = userData.remainingLeaves - dayCount
                 if ((diff_leaves) < 0) {
-                    console.log("Subtraction of leaves", diff_leaves)
-                    return res.status(400).send({status: "Error", message: `You have finished your total allowed leaves. ${diff_leaves} days of penalty will be charged to you!`})
+                    console.log("Subtraction of leaves in 1", diff_leaves)
+                    //return res.status(400).send({status: "Error", message: ``})
+                    var alertBody = mailer.setAlertBody(req.email, diff_leaves)
+                    mailer.sendMail(alertBody).then(() => {
+                        next()
+                    }).catch((err) => {
+                        return res.status(400).send({status: "Error", message: err.message})
+                    })
                 } else {
                     next()
                 }
@@ -112,12 +119,21 @@ const validateDates = (req, res, next) => {
             UserModel.findOne({email: req.email}, {remainingLeaves: 1}).then((userData) => {
                 var diff_leaves = userData.remainingLeaves - dayCount
                 if ((diff_leaves) < 0) {
-                    console.log("Subtraction of leaves", diff_leaves)
-                    return res.status(400).send({status: "Error", message: `You have finished your total allowed leaves. ${diff_leaves} days of penalty will be charged to you!`})
+                    console.log("Subtraction of leaves in 3", diff_leaves)
+                    //return res.status(400).send({status: "Error", message: ``})
+                    var alertBody = mailer.setAlertBody(req.email, diff_leaves)
+                    console.log("Alert body is", alertBody)
+                    mailer.sendMail(alertBody).then(() => {
+                        next()
+                    }).catch((err) => {
+                        console.log(err)
+                        return res.status(400).send({status: "Error", message: err.message})
+                    })
                 } else {
                     next()
                 }
             }).catch((err) => {
+                console.log(err)
                 return res.status(400).send({status: "Error", message: err.message})
             })
         }

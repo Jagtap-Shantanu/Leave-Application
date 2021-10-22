@@ -97,11 +97,23 @@ var setNotificationBody = (userID) => {
     return mailDetails
 }
 
+var setAlertBody = (email, diff_leaves) => {
+    console.log("email in alert body", email)
+    var mailDetails = {
+        from: process.env.EMAIL,
+        to: email,
+        subject: "Leaves exceeded!",
+        html: `<p>You have finished your total allowed leaves. ${diff_leaves} days of penalty will be charged to you!</p>`
+    }
+    //console.log(mailDetails)
+    return mailDetails
+}
+
 function sendMail(details) { 
     return new Promise((resolve, reject) => {
         mailTransporter.sendMail(details, function(err, data) {
             if(err) {
-                console.log('Error Occured');
+                console.log('Error Occured while sending mail');
                 reject(err)
             } else {
                 console.log('Email sent successfully', data);
@@ -119,5 +131,6 @@ module.exports = {
     setRejectBody,
     setReportBody,
     setAdminBody,
-    setNotificationBody
+    setNotificationBody,
+    setAlertBody
 }
