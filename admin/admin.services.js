@@ -48,6 +48,8 @@ const approve = (leaveID) => {
                         reject(err)
                     })
 
+                    //UserModel.findOneAndUpdate({userID: approvedReport.userID}, {$inc: {penalty: }})
+
                 }).catch((err) => {
                     reject(err)
                 })
@@ -202,6 +204,28 @@ const storeJsonToExcel = async () => {
     }
 }
 
+const setPenalty = (leaveID) => {
+    return new Promise((resolve, reject) => {
+        LeaveModel.findOne({leaveID}, {userID: 1, dayCount: 1}).then((leaveData) => {
+            console.log("penalty data", leaveData)
+            UserModel.findOne({userID: leaveData.userID}, {remainingLeaves: 1}).then((userData) => {
+                console.log("remaining leaves are", userData)
+
+                UserModel.findOneAndUpdate({userID: leaveData.userID}, {$set: {penalty: -1 * userData.remainingLeaves * 1000}}, {new: true}).then((penaltyData) => {
+                    console.log("Penalty is set to", penaltyData)
+                    resolve(penaltyData)
+                }).catch((err) => {
+                    console.log("remaining leaves", err)
+                reject(err)
+                })
+            }).catch((err) => {
+                console.log("remaining leaves", err)
+                reject(err)
+            })
+        })
+    })
+}
+
 module.exports = {
     getLeaves,
     getUsers,
@@ -210,5 +234,6 @@ module.exports = {
     suggest,
     fetchLeaves,
     getLeavesByID,
-    storeJsonToExcel
+    storeJsonToExcel,
+    setPenalty
 }

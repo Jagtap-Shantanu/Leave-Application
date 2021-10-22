@@ -42,7 +42,7 @@ var setApproveBody = (email, leaveID, remainingLeaves) => {
         from: process.env.EMAIL,
         to: email,
         subject: `Approved your report ID-${leaveID}`,
-        html: `<p>Your report is successfully approved. Your remaining leave count - ${remainingLeaves} days and taken leaves till date - ${takenLeaves} days</p>`
+        html: `<p>Your report is successfully approved. Your remaining leave count : ${remainingLeaves} days and taken leaves till date : ${takenLeaves} days</p>`
     }
     console.log(mailDetails)
 
