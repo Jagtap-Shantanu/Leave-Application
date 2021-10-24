@@ -39,7 +39,7 @@ const storage = multer.diskStorage({
     }
   })
   
-  const upload = multer({ storage: storage })
+const upload = multer({ storage: storage })
 
 app.post('/upload', upload.single('file'), (req, res) => {
     console.log("File received", req.file)
@@ -64,7 +64,7 @@ app.get("/", (req, res) => {
     res.send("Welcome to Leave reporting application!!")
 })
 
-Mongoose.connect(process.env.DBURL).then(function(){
+Mongoose.connect(process.env.DBURL_LIVE).then(function(){
     console.log("Connetcted to database")
 
     app.listen(PORT, () => {
