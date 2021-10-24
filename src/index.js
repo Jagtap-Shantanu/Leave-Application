@@ -21,6 +21,10 @@ app.use(bodyparser.urlencoded({extended: true}))
 // app.use(express.urlencoded({extended: true}))
 app.use(routes)
 
+app.get("/", (req, res) => {
+    res.send("Welcome to Leave reporting application!!")
+})
+
 Mongoose.connect(process.env.DBURL).then(function(){
     console.log("Connetcted to database")
 
