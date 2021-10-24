@@ -16,7 +16,7 @@ const register = (req, res) => {
     userServices.addUser(req.body).then((data) => {
         const token = userServices.createToken(req.body)
         console.log(req.body, token)
-        var url = "http://localhost:3000/user/verify?token="+token
+        var url = "https://leave-application-by-shantanu.herokuapp.com/user/verify?token="+token
         var emailDetails = mailer.setBody(req.body.email, url)
 
         //console.log("Email details ", emailDetails)
