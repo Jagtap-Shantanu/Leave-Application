@@ -28,8 +28,8 @@ var details
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        if (!fs.existsSync("./uploads")) {
-            fs.mkdirSync("./uploads")
+        if (!fs.existsSync("../uploads")) {
+            fs.mkdirSync("../uploads")
         }
         cb(null, './uploads/')
     },
@@ -47,14 +47,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
     service.sendToCloud(details.originalname).then((url) => {
         details.url = url
         console.log(details)
-        service.addToTextFile(details).then(() => {
-            console.log("Data added to textfile")
-            res.send({status: "Success", details})
-            //res.send(details)
-        }).catch((err) => {
-            console.log("Error occured", err)
-            res.send(err)
-        })
+        res.send({status: "Success", url})
     }).catch((err) => {
         res.send(err)
     })
