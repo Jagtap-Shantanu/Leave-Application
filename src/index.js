@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express")
 const bodyparser = require("body-parser")
 const Mongoose = require("mongoose")
@@ -7,7 +8,6 @@ const notifyAdmin = require("../services/mailNotification")
 const multer = require("multer")
 const fs = require("fs")
 const service = require("../services/upload.services")
-require("dotenv").config()
 
 //For scheduling emails every 24 hours :-  * */24 * * *
 cron.schedule('*/5 * * * *', () => {
@@ -57,6 +57,7 @@ app.get("/", (req, res) => {
     res.send("Welcome to Leave reporting application!!")
 })
 
+console.log("Mongodb url", process.env.DBURL_LIVE)
 Mongoose.connect(process.env.DBURL_LIVE).then(function(){
     console.log("Connetcted to database")
 
