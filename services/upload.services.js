@@ -8,9 +8,9 @@ exports.sendToCloud = (filename) => {
 
     return new Promise((resolve, reject) => {
         cloudinary.config({
-            cloud_name: "dz0yaecxs",
-            api_key: "184326487576423",
-            api_secret: "xUIeQDlPEgo49v3ebbx9gjHuG5c"
+            cloud_name: process.env.CLOUD_NAME,
+            api_key: process.env.API_KEY,
+            api_secret: process.env.API_SECRET
         })
     
         var filePath = path.resolve(__dirname + "/../uploads/" + filename)
