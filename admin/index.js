@@ -17,6 +17,6 @@ router.post("/suggest", services.isAdmin, services.isPending, adminController.su
 
 router.get("/getleaves", services.isAdmin, adminController.getReports)
 
-router.get("/download", adminController.download)
+router.get("/download", services.isAdmin, adminController.download)
 
 module.exports = router  
