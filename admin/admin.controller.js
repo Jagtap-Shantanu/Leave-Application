@@ -76,8 +76,8 @@ const download = (req, res) => {
     adminServices.storeJsonToExcel().then((result) => {
         var excelFilePath = path.resolve(__dirname, "../UserLeaveData.xlsx")
         console.log("Path is", excelFilePath)
-        //res.download(excelFilePath)
-        res.send({status: "Success", message: result})
+        res.download(excelFilePath)
+        //res.send({status: "Success", message: result})
     }).catch((err) => {
         res.status(500).send({status: "Error", message: err})
     })
