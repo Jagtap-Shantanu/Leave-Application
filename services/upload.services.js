@@ -1,6 +1,7 @@
 var cloudinary = require('cloudinary').v2
 const fs = require("fs")
 const path = require("path")
+require("dotenv").config()
 
 console.log("cloudinary credentials", process.env.API_KEY, process.env.CLOUD_NAME, process.env.API_SECRET)
 
@@ -12,7 +13,7 @@ exports.sendToCloud = (filename) => {
             api_key: process.env.API_KEY,
             api_secret: process.env.API_SECRET
         })
-    
+     
         var filePath = path.resolve(__dirname + "/../uploads/" + filename)
         console.log("Uploading...", filePath)
     
