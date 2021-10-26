@@ -24,7 +24,7 @@ app.use(bodyparser.urlencoded({extended: true}))
 // app.use(express.urlencoded({extended: true}))
 app.use(routes)
 
-var details
+var details 
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
